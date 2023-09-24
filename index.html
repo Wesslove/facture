@@ -5,90 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facture avec TVA</title>
      <style>
-        /* Styles CSS pour la facture */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-        .facture {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 5px;
-        }
-        .facture h1{
-            color: #0a62dc;
-        }
-        .facture-header {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .entreprise-info, .client-info {
-            width: 48%;
-            padding: 10px;
-            background-color: #f2f2f2;
-            border-radius: 5px;
-        }
-        .entreprise-info h2, .client-info h2 {
-            font-size: 1.2rem;
-            margin-top: 0;
-        }
-        .entreprise-info label, .client-info label {
-            display: block;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #6377f9;
-            color: #fff;
-        }
-        .total {
-            text-align: right;
-            margin-top: 20px;
-        }
-        form {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .form-input {
-            width: 30%;
-            margin-right: 10px;
-        }
-        label, input, button {
-            display: block;
-            margin-bottom: 10px;
-        }
+     /* Styles CSS pour la facture */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
 
-        /* Styles pour masquer les inputs lors de l'impression */
-        @media print {
-            input {
-                border: none;
-            }
+.facture {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 5px;
+}
 
-            .ajouterProduit .form-input, .ajouterProduit label{
-                display: none;
-            }
-        }
+.facture h1 {
+    color: #0a62dc;
+}
+
+.facture-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Pour aligner verticalement les éléments */
+}
+
+.facture-date {
+    display: flex;
+    flex-direction: column; /* Pour empiler les éléments verticalement */
+    align-items: flex-end; /* Pour aligner à droite */
+}
+
+.entreprise-info, .client-info {
+    width: 48%;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+
+.entreprise-info h2, .client-info h2 {
+    font-size: 1.2rem;
+    margin-top: 0;
+}
+
+.entreprise-info label, .client-info label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #6377f9;
+    color: #fff;
+}
+
+.total {
+    text-align: right;
+    margin-top: 20px;
+}
+
+form {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.form-input {
+    width: 30%;
+    margin-right: 10px;
+}
+
+label, input, button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.remerciements {
+    color: #0a62dc;
+    font-style: italic;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.contact {
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.contact a {
+    color: #0a62dc;
+    font-style: italic;
+    text-decoration: none;
+}
+
+/* Styles pour masquer les inputs lors de l'impression */
+@media print {
+    input,
+    #imprimerFacture,
+    #ajouterProduit, /* Cible le formulaire */
+    #ajouterProduit button /* Cible le bouton dans le formulaire */ {
+        display: none;
+    }
+    .ajouterProduit .form-input, .ajouterProduit label{
+        display: none;
+    }
+}
+
+/* Styles pour rendre la page responsive */
+@media (max-width: 600px) {
+    .facture {
+        padding: 10px;
+    }
+    .entreprise-info, .client-info {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .form-input {
+        width: 100%;
+    }
+    table {
+        font-size: 12px;
+    }
+}
+
     </style>
 </head>
 <body>
     <div class="facture">
         <h1>Facture</h1>
+            <label for="dateFacture">Date de la facture:</label>
+            <input type="date" id="dateFacture" required>
+
         <div class="facture-header">
             <div class="entreprise-info">
                 <h2>Informations de l'entreprise:</h2>
@@ -116,6 +178,7 @@
                     <th>Prix unitaire (XAF)</th>
                     <th>Quantité</th>
                     <th>Total (XAF)</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody id="factureBody">
@@ -126,6 +189,11 @@
         <p class="total">TVA (18%) (XAF) : <span id="tva"></span> XAF</p>
         <p class="total">Remise (5%) (XAF) : <span id="remise"></span> XAF</p>
         <p class="total">Total TTC (XAF) : <span id="totalTTC"></span> XAF</p>
+
+        <p class="remerciements">Nous vous remercions de votre confiance.</p>
+        <p class="contact">Pour toute question concernant cette facture, veuillez contacter :</p>
+        <p class="contact"><a href="tel:+3364473655">KOUKA, 06 447 36 55</a>, <a href="mailto:koukajuniorwesslove@gmail.com">koukajuniorwesslove@gmail.com</a></p>
+
         <form id="ajouterProduit">
             <div class="form-input">
                 <label for="nomProduit">Nom du produit:</label>
@@ -142,6 +210,7 @@
             <button type="submit">Ajouter Produit</button>
         </form>
     </div>
+    <button type="button" id="imprimerFacture">Imprimer Facture</button>
 
     <script>
         // Tableau pour stocker les produits
@@ -153,12 +222,13 @@
             event.preventDefault(); // Empêcher le formulaire de soumettre la page
 
             // Récupérer les valeurs du formulaire
+            const dateFacture = document.getElementById('dateFacture').value; // Récupérer la date de la facture
             const nomProduit = document.getElementById('nomProduit').value;
             const prixFCAF = parseFloat(document.getElementById('prixProduit').value);
             const quantiteProduit = parseInt(document.getElementById('quantiteProduit').value);
 
             // Ajouter le produit au tableau
-            produits.push({ nom: nomProduit, prixFCAF: prixFCAF, quantite: quantiteProduit });
+            produits.push({ nom: nomProduit, prixFCAF: prixFCAF, quantite: quantiteProduit, date: dateFacture });
 
             // Mettre à jour la facture
             mettreAJourFacture();
@@ -182,6 +252,7 @@
                         <td>${produit.prixFCAF.toFixed(2)}</td>
                         <td>${produit.quantite}</td>
                         <td>${totalProduitXAF.toFixed(2)}</td>
+                        <td>${produit.date}</td> <!-- Afficher la date -->
                     </tr>
                 `;
 
@@ -203,6 +274,15 @@
             document.getElementById('remise').textContent = remiseXAF.toFixed(2);
             document.getElementById('totalTTC').textContent = totalTTCXAF.toFixed(2);
         }
+
+        // Sélectionnez le bouton "Imprimer Facture"
+        const boutonImprimer = document.getElementById('imprimerFacture');
+
+        // Ajoutez un gestionnaire d'événement pour le clic sur le bouton
+        boutonImprimer.addEventListener('click', function () {
+            // Appelez la fonction d'impression du navigateur
+            window.print();
+        });
     </script>
 </body>
 </html>
