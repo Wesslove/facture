@@ -115,15 +115,16 @@ label, input, button {
 
 /* Styles pour masquer les inputs lors de l'impression */
 @media print {
-    input,
+  
     #imprimerFacture,
     #ajouterProduit, /* Cible le formulaire */
     #ajouterProduit button /* Cible le bouton dans le formulaire */ {
         display: none;
     }
-    .ajouterProduit .form-input, .ajouterProduit label{
-        display: none;
+    .entreprise-info input, .client-info input, .facture input{
+        border: none;
     }
+
 }
 
 /* Styles pour rendre la page responsive */
